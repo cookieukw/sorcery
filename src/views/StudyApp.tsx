@@ -9,6 +9,7 @@ import {
 import SubjectsList from "../components/SubjectList";
 import StudySettings from "../components/StudySettings";
 import StudyPlanner from "../components/StudyPlanner";
+import AdSense from "../components/AdSense";
 
 const StudyApp: React.FC = () => {
   const [hoursPerDay, setHoursPerDay] = useState(1);
@@ -18,10 +19,11 @@ const StudyApp: React.FC = () => {
     <IonApp>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Planner de Estudo</IonTitle>
+          <IonTitle>Planejador de ciclo de estudos</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        <AdSense />
         <StudySettings
           hoursPerDay={hoursPerDay}
           setHoursPerDay={setHoursPerDay}
@@ -30,6 +32,7 @@ const StudyApp: React.FC = () => {
         />
         <SubjectsList />
         <StudyPlanner hoursPerDay={hoursPerDay} daysPerWeek={daysPerWeek} />
+        <AdSense />
       </IonContent>
     </IonApp>
   );
