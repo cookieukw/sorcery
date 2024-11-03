@@ -44,54 +44,43 @@ const SubjectsList: React.FC = () => {
 
   return (
     <IonCard>
-      <IonCard>
-        <IonCardHeader>
-          <IonCardTitle>Como funciona: </IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonText>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
-              Cada
-              <IonIcon
-                style={{ cursor: "pointer", color: "red", fontSize: "1.4em" }}
-                icon={closeCircle}
-              />
-              representa um nível de dificuldade. Quanto maior sua dificuldade
-              em uma matéria, mais horas serão estudadas.
-            </div>
-          </IonText>
-          <IonText>
-            <br />
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "4px",
-                marginTop: "8px",
-              }}
-            >
-              Cada
-              <div
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  backgroundColor: "lightgray",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              />
-              representa uma hora a ser estudada por semana. Marque todas antes
-              de recomeçar o ciclo e depois vá desmarcando para o novo ciclo.
-            </div>
-          </IonText>
-        </IonCardContent>
-      </IonCard>
+     <IonCard>
+  <IonCardHeader>
+    <IonCardTitle>Como funciona: </IonCardTitle>
+  </IonCardHeader>
+  <IonCardContent>
+    <IonText>
+      Cada{" "}
+      <IonIcon
+        style={{
+          cursor: "pointer",
+          color: "red",
+          fontSize: "1.4em",
+          verticalAlign: "middle",
+        }}
+        icon={closeCircle}
+      />{" "}
+      representa um nível de dificuldade. Quanto maior sua dificuldade em uma matéria, mais horas serão estudadas.
+    </IonText>
+    
+    <IonText>
+      <br />
+      <div style={{ display: "flex", alignItems: "center", marginTop: "8px" }}>
+        Cada{" "}
+        <div
+          style={{
+            width: "24px",
+            height: "24px",
+            backgroundColor: "lightgray",
+            borderRadius: "4px",
+            margin: "0 8px",
+          }}
+        />{" "}
+        representa uma hora a ser estudada por semana. Marque todas antes de recomeçar o ciclo e depois vá desmarcando para o novo ciclo.
+      </div>
+    </IonText>
+  </IonCardContent>
+</IonCard>
 
       <IonCardContent>
         <IonItem>
