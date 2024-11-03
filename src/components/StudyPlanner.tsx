@@ -29,7 +29,7 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
     const totalHoursPerWeek = hoursPerDay * daysPerWeek;
     return subjects.map((subject: Subject) => {
       const hoursForSubject = Math.round(
-        (totalHoursPerWeek / totalDifficulty) * subject.difficulty
+        (totalHoursPerWeek / totalDifficulty) * subject.difficulty 
       );
       const requiredSquares = Math.max(1, hoursForSubject);
       const updatedSquares = subject.selectedSquares
@@ -65,8 +65,10 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
       <IonRow>
         {calculateStudyPlan().map((subject) => (
           <IonCol size="12" key={subject.id}>
+            
             <IonCard>
               <IonCardContent>
+                
                 <IonLabel>
                   <strong>{subject.name}</strong>
                 </IonLabel>
