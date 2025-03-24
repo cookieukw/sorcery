@@ -1,69 +1,78 @@
-import  { useEffect } from 'react';
+// components/StudySettings.tsx
 import {
-  IonCard, IonCardContent, IonItem, IonLabel, IonInput, IonText,
-} from '@ionic/react';
-import { db } from '../classes/db';
+    IonCard,
+    IonCardContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonText,
+    IonToggle
+} from "@ionic/react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "../classes/db";
 
-const StudySettings: React.FC<{
-  hoursPerDay: number;
-  setHoursPerDay: (value: number) => void;
-  daysPerWeek: number;
-  setDaysPerWeek: (value: number) => void;
-}> = ({ hoursPerDay, setHoursPerDay, daysPerWeek, setDaysPerWeek }) => {
-  const maxHoursPerWeek = 7 * 24;
+const StudySettings: React.FC = () => {
+    const settings = useLiveQuery(() => db.settings.get(1));
 
-  const validateHoursPerDay = (value: number) => setHoursPerDay(Math.max(0, value));
-  const validateDaysPerWeek = (value: number) => setDaysPerWeek(Math.min(7, Math.max(1, value)));
+    const updateSettings = async (changes:any) => {
+        await db.settings.update(1, changes);
+    };
 
-  const fetchSettings = async () => {
-    const settingsFromDB = await db.settings.toArray();
-    if (settingsFromDB.length > 0) {
-      const { hoursPerDay, daysPerWeek } = settingsFromDB[0];
-      setHoursPerDay(hoursPerDay);
-      setDaysPerWeek(daysPerWeek);
-    }
-  };
+    if (!settings) return null;
 
-  const saveSettings = async () => {
-    await db.settings.clear();
-    await db.settings.add({ hoursPerDay, daysPerWeek }); 
-  };
+    return (
+        <IonCard>
+            <IonCardContent>
+                {/* Toggle do Tema - Agora sincronizado com o Dexie */}
+                <IonItem>
+                    <IonLabel>Modo Escuro</IonLabel>
+                    <IonToggle
+                        checked={settings?.darkMode}
+                        onIonChange={e =>
+                            updateSettings({ darkMode: e.detail.checked })
+                        }
+                    />
+                </IonItem>
 
-  useEffect(() => {
-    fetchSettings(); 
-  }, []);
+                {/* Restante das configurações */}
+                <IonItem>
+                    <IonLabel>Horas por Dia:</IonLabel>
+                    <IonInput
+                        type="number"
+                        value={settings.hoursPerDay}
+                        onIonChange={e =>
+                            updateSettings({
+                                hoursPerDay: Math.max(0, Number(e.detail.value))
+                            })
+                        }
+                    />
+                </IonItem>
 
-  useEffect(() => {
-    saveSettings(); 
-  }, [hoursPerDay, daysPerWeek]);
+                <IonItem>
+                    <IonLabel>Dias por Semana:</IonLabel>
+                    <IonInput
+                        type="number"
+                        value={settings.daysPerWeek}
+                        onIonChange={e =>
+                            updateSettings({
+                                daysPerWeek: Math.min(
+                                    7,
+                                    Math.max(1, Number(e.detail.value))
+                                )
+                            })
+                        }
+                    />
+                </IonItem>
 
-  return (
-    <IonCard>
-      <IonCardContent>
-        <IonItem>
-          <IonLabel>Horas por Dia:</IonLabel>
-          <IonInput
-            type="number"
-            value={hoursPerDay}
-            onIonChange={(e) => validateHoursPerDay(Number(e.detail.value))}
-          />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Dias por Semana:</IonLabel>
-          <IonInput
-            type="number"
-            value={daysPerWeek}
-            onIonChange={(e) => validateDaysPerWeek(Number(e.detail.value))}
-          />
-        </IonItem>
-        <IonText color="medium">
-          <p style={{ textAlign: 'center' }}>
-            Total de horas semanais: {hoursPerDay * daysPerWeek}/{maxHoursPerWeek}
-          </p>
-        </IonText>
-      </IonCardContent>
-    </IonCard>
-  );
+                <IonText color="medium">
+                    <p style={{ textAlign: "center" }}>
+                        Total de horas semanais:{" "}
+                        {settings.hoursPerDay * settings.daysPerWeek}
+                    </p>
+                </IonText>
+            </IonCardContent>
+        </IonCard>
+    );
 };
 
 export default StudySettings;
