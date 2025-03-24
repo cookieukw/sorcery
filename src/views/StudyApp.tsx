@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 
 const StudyApp: React.FC = () => {
     const settings = useLiveQuery(() => db.settings.get(1));
-    const darkMode = settings?.darkMode??false;
+    const darkMode = settings?.darkMode ?? false;
 
     const toggleDarkPalette = (shouldAdd: boolean) => {
         document.documentElement.classList.toggle(
@@ -71,14 +71,10 @@ const StudyApp: React.FC = () => {
             <IonContent>
                 {/* Área com animação de entrada para os componentes */}
                 <motion.div
-                    initial="hidden"
-                    animate="visible"
                     variants={containerVariants}
                     style={{ padding: "1rem" }}
                 >
-                    <motion.div variants={itemVariants}>
-                        <StudySettings />
-                    </motion.div>
+                    <StudySettings />
                     <motion.div variants={itemVariants}>
                         <SubjectsList />
                     </motion.div>

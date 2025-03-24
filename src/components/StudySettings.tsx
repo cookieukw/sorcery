@@ -1,4 +1,3 @@
-// components/StudySettings.tsx
 import {
     IonCard,
     IonCardContent,
@@ -10,15 +9,27 @@ import {
 } from "@ionic/react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../classes/db";
+import { useState } from "react";
+import { debounce } from "lodash";
 
 const StudySettings: React.FC = () => {
     const settings = useLiveQuery(() => db.settings.get(1));
 
-    const updateSettings = async (changes:any) => {
-        await db.settings.update(1, changes);
-    };
+    // Estados locais para evitar atualização a cada digitação
+    const [hoursPerDay, setHoursPerDay] = useState<number>(
+        settings?.hoursPerDay ?? 5
+    );
+    const [daysPerWeek, setDaysPerWeek] = useState<number>(
+        settings?.daysPerWeek ?? 5
+    );
 
-    if (!settings) return null;
+    // Função para atualizar com debounce
+    const updateSettings = debounce(
+        async (changes: Partial<typeof settings>) => {
+            await db.settings.update(1, changes);
+        },
+        500
+    ); // Espera 500ms antes de salvar
 
     return (
         <IonCard>
@@ -39,12 +50,12 @@ const StudySettings: React.FC = () => {
                     <IonLabel>Horas por Dia:</IonLabel>
                     <IonInput
                         type="number"
-                        value={settings.hoursPerDay}
-                        onIonChange={e =>
-                            updateSettings({
-                                hoursPerDay: Math.max(0, Number(e.detail.value))
-                            })
-                        }
+                        value={hoursPerDay}
+                        onIonChange={e => {
+                            const value = Math.max(0, Number(e.detail.value));
+                            setHoursPerDay(value);
+                            updateSettings({ hoursPerDay: value });
+                        }}
                     />
                 </IonItem>
 
@@ -52,22 +63,22 @@ const StudySettings: React.FC = () => {
                     <IonLabel>Dias por Semana:</IonLabel>
                     <IonInput
                         type="number"
-                        value={settings.daysPerWeek}
-                        onIonChange={e =>
-                            updateSettings({
-                                daysPerWeek: Math.min(
-                                    7,
-                                    Math.max(1, Number(e.detail.value))
-                                )
-                            })
-                        }
+                        value={daysPerWeek}
+                        onIonChange={e => {
+                            const value = Math.min(
+                                7,
+                                Math.max(1, Number(e.detail.value))
+                            );
+                            setDaysPerWeek(value);
+                            updateSettings({ daysPerWeek: value });
+                        }}
                     />
                 </IonItem>
 
+                {/* Exibição do total de horas semanais corrigido */}
                 <IonText color="medium">
                     <p style={{ textAlign: "center" }}>
-                        Total de horas semanais:{" "}
-                        {settings.hoursPerDay * settings.daysPerWeek}
+                        Total de horas semanais: {hoursPerDay * daysPerWeek}
                     </p>
                 </IonText>
             </IonCardContent>

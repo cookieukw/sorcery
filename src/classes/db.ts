@@ -27,8 +27,14 @@ export class StudyDatabase extends Dexie {
         });
         this.subjects = this.table("subjects");
         this.settings = this.table("settings");
-        
     }
 }
 
 export const db = new StudyDatabase();
+db.on("populate", (tx: Transaction) => {
+    tx.table("settings").add({
+        hoursPerDay: 5,
+        daysPerWeek: 5,
+        darkMode: false
+    });
+});

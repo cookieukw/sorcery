@@ -21,7 +21,7 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
     hoursPerDay,
     daysPerWeek
 }) => {
-    const subjects = useLiveQuery(() => db.subjects.toArray())!;
+    const subjects = useLiveQuery(() => db.subjects.toArray()) ?? [];
 
     const calculateStudyPlan = () => {
         const totalHoursPerWeek = hoursPerDay * daysPerWeek;
