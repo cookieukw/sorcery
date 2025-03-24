@@ -1,5 +1,5 @@
 //classes/db.ts
-import Dexie from "dexie";
+import Dexie,{Transaction} from "dexie";
 
 export interface Subject {
     id?: number;

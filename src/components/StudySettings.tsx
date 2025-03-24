@@ -9,27 +9,39 @@ import {
 } from "@ionic/react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../classes/db";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { debounce } from "lodash";
+import {UpdateSpec} from "dexie"
+// Definição do tipo Settings
+interface Settings {
+    id: number;
+    darkMode: boolean;
+    hoursPerDay: number;
+    daysPerWeek: number;
+}
 
 const StudySettings: React.FC = () => {
     const settings = useLiveQuery(() => db.settings.get(1));
 
     // Estados locais para evitar atualização a cada digitação
-    const [hoursPerDay, setHoursPerDay] = useState<number>(
-        settings?.hoursPerDay ?? 5
-    );
-    const [daysPerWeek, setDaysPerWeek] = useState<number>(
-        settings?.daysPerWeek ?? 5
-    );
+    const [hoursPerDay, setHoursPerDay] = useState<number>(5);
+    const [daysPerWeek, setDaysPerWeek] = useState<number>(5);
+    const [darkMode, setDarkMode] = useState<boolean>(false);
+
+    // Atualiza estados locais quando os dados são carregados
+    useEffect(() => {
+        if (settings) {
+            setHoursPerDay(settings.hoursPerDay ?? 5);
+            setDaysPerWeek(settings.daysPerWeek ?? 5);
+            setDarkMode(settings.darkMode ?? false);
+        }
+    }, [settings]);
 
     // Função para atualizar com debounce
-    const updateSettings = debounce(
-        async (changes: Partial<typeof settings>) => {
-            await db.settings.update(1, changes);
-        },
-        500
-    ); // Espera 500ms antes de salvar
+    const updateSettings = debounce(async (changes: Partial<Settings>) => {
+        if (!settings) return; // Evita erro se settings for undefin(ed
+        await db.settings.update(settings.id, changes as UpdateSpec<Settings>);
+    }, 500); // Espera 500ms antes de salvar
 
     return (
         <IonCard>
@@ -38,10 +50,12 @@ const StudySettings: React.FC = () => {
                 <IonItem>
                     <IonLabel>Modo Escuro</IonLabel>
                     <IonToggle
-                        checked={settings?.darkMode}
-                        onIonChange={e =>
-                            updateSettings({ darkMode: e.detail.checked })
-                        }
+                        checked={darkMode}
+                        onIonChange={e => {
+                            const newValue = e.detail.checked;
+                            setDarkMode(newValue);
+                            updateSettings({ darkMode: newValue });
+                        }}
                     />
                 </IonItem>
 
