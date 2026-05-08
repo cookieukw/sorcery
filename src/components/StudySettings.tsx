@@ -4,14 +4,24 @@ import {
     IonInput,
     IonText,
     IonToggle,
-    IonIcon
+    IonIcon,
+    IonButton,
+    IonAlert
 } from "@ionic/react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../classes/db";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { UpdateSpec } from "dexie";
-import { moonOutline, sunnyOutline, timeOutline, calendarOutline } from "ionicons/icons";
+import { 
+    moonOutline, 
+    sunnyOutline, 
+    timeOutline, 
+    calendarOutline, 
+    trashOutline, 
+    refreshOutline,
+    alertCircleOutline
+} from "ionicons/icons";
 
 interface Settings {
     id: number;
@@ -26,6 +36,7 @@ const StudySettings: React.FC = () => {
     const [hoursPerDay, setHoursPerDay] = useState<number>(5);
     const [daysPerWeek, setDaysPerWeek] = useState<number>(5);
     const [darkMode, setDarkMode] = useState<boolean>(false);
+    const [showAlert, setShowAlert] = useState<{ show: boolean, type: 'progress' | 'all' }>({ show: false, type: 'progress' });
 
     useEffect(() => {
         if (settings) {
@@ -39,6 +50,23 @@ const StudySettings: React.FC = () => {
         if (!settings) return;
         await db.settings.update(settings.id, changes as UpdateSpec<Settings>);
     }, 500);
+
+    const resetProgress = async () => {
+        const subjects = await db.subjects.toArray();
+        for (const subject of subjects) {
+            await db.subjects.update(subject.id!, {
+                selectedSquares: subject.selectedSquares.map(() => false)
+            });
+        }
+    };
+
+    const resetAll = async () => {
+        await db.subjects.clear();
+        await db.settings.update(1, {
+            hoursPerDay: 5,
+            daysPerWeek: 5
+        });
+    };
 
     return (
         <div className="glass-card">
@@ -109,6 +137,58 @@ const StudySettings: React.FC = () => {
                     {hoursPerDay * daysPerWeek}h <span style={{ fontSize: '1rem', fontWeight: 400, opacity: 0.6 }}>/semana</span>
                 </div>
             </div>
+
+            {/* Danger Zone */}
+            <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: '#ff4961' }}>
+                    <IonIcon icon={alertCircleOutline} />
+                    <h3 style={{ margin: 0, fontSize: '1rem', color: '#ff4961', background: 'none', webkitTextFillColor: 'initial' }}>Zona de Perigo</h3>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <IonButton 
+                        fill="outline" 
+                        color="warning" 
+                        expand="block" 
+                        style={{ flex: 1, fontSize: '0.8rem' }}
+                        onClick={() => setShowAlert({ show: true, type: 'progress' })}
+                    >
+                        <IonIcon icon={refreshOutline} slot="start" />
+                        Zerar Ciclo
+                    </IonButton>
+                    <IonButton 
+                        fill="outline" 
+                        color="danger" 
+                        expand="block" 
+                        style={{ flex: 1, fontSize: '0.8rem' }}
+                        onClick={() => setShowAlert({ show: true, type: 'all' })}
+                    >
+                        <IonIcon icon={trashOutline} slot="start" />
+                        Resetar Tudo
+                    </IonButton>
+                </div>
+            </div>
+
+            <IonAlert
+                isOpen={showAlert.show}
+                onDidDismiss={() => setShowAlert({ ...showAlert, show: false })}
+                header={showAlert.type === 'progress' ? 'Zerar Progresso?' : 'Resetar Tudo?'}
+                message={
+                    showAlert.type === 'progress' 
+                    ? 'Isso limpará todos os quadrados marcados, mas manterá suas matérias.' 
+                    : 'Isso apagará todas as matérias e voltará as configurações ao padrão.'
+                }
+                buttons={[
+                    { text: 'Cancelar', role: 'cancel' },
+                    { 
+                        text: 'Confirmar', 
+                        handler: () => {
+                            if (showAlert.type === 'progress') resetProgress();
+                            else resetAll();
+                        }
+                    }
+                ]}
+            />
         </div>
     );
 };

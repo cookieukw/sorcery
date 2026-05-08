@@ -12,6 +12,8 @@ import { db } from "../classes/db";
 import SubjectsList from "../components/SubjectList";
 import StudySettings from "../components/StudySettings";
 import StudyPlanner from "../components/StudyPlanner";
+import StudyStats from "../components/StudyStats";
+import AdBanner from "../components/AdBanner";
 import { motion } from "framer-motion";
 
 const StudyApp: React.FC = () => {
@@ -68,6 +70,10 @@ const StudyApp: React.FC = () => {
             <motion.div variants={itemVariants}>
               <StudySettings />
             </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <StudyStats />
+            </motion.div>
             
             <motion.div variants={itemVariants}>
               <SubjectsList />
@@ -78,6 +84,10 @@ const StudyApp: React.FC = () => {
                 hoursPerDay={settings?.hoursPerDay ?? 5}
                 daysPerWeek={settings?.daysPerWeek ?? 5}
               />
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <AdBanner />
             </motion.div>
           </motion.div>
         </div>
