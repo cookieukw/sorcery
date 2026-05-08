@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function AdBanner() {
+  const [adId] = useState(() => `ad-container-${Math.random().toString(36).substr(2, 9)}`);
+
   useEffect(() => {
     const config = document.createElement("script");
     config.type = "text/javascript";
@@ -18,7 +20,7 @@ export default function AdBanner() {
     script.type = "text/javascript";
     script.src = "//www.highperformanceformat.com/1643c699094a5ea6574adf86632472a5/invoke.js";
 
-    const container = document.getElementById("ad-container-728x90");
+    const container = document.getElementById(adId);
     if (container) {
       container.appendChild(config);
       container.appendChild(script);
@@ -27,7 +29,11 @@ export default function AdBanner() {
     return () => {
       if (container) container.innerHTML = "";
     };
-  }, []);
+  }, [adId]);
 
-  return <div id="ad-container-728x90" className="flex justify-center my-4"></div>;
+  return (
+    <div className="flex-center" style={{ margin: '2rem 0', minHeight: '90px', width: '100%', overflow: 'hidden', borderRadius: '12px' }}>
+      <div id={adId} style={{ maxWidth: '100%' }}></div>
+    </div>
+  );
 }

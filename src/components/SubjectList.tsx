@@ -1,19 +1,15 @@
 // components/SubjectsList.tsx
 import { useState } from "react";
 import {
-    IonCard,
-    IonCardContent,
     IonItem,
     IonLabel,
     IonButton,
     IonInput,
     IonIcon,
-    IonCardHeader,
-    IonCardTitle,
     IonText,
     IonSpinner
 } from "@ionic/react";
-import { close, closeCircle } from "ionicons/icons";
+import { star, starOutline, addOutline, trashOutline, helpCircleOutline } from "ionicons/icons";
 import { useReward } from "react-rewards";
 import { db } from "../classes/db";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -23,40 +19,23 @@ const SubjectsList: React.FC = () => {
     const [name, setName] = useState("");
     const [difficulty, setDifficulty] = useState(3);
     const [isLoading, setIsLoading] = useState(false);
+    const [showHelp, setShowHelp] = useState(false);
 
     const subjects = useLiveQuery(() => db.subjects.toArray()) || [];
 
-    // Rewards para feedback visual
-    const { reward: trash } = useReward("trash", "emoji", {
-        emoji: ["🗑"]
-    });
-    const { reward: square } = useReward("square", "emoji", {
-        emoji: ["🟩", "🟦", "🟧", "🟥", "🟪", "🟫", "🟨"]
-    });
-    const { reward: change } = useReward("change", "emoji", {
-        emoji: ["❌️"]
-    });
-
-    const handleDifficultyChange = (value: number) => {
-        change();
-        setDifficulty(value);
-    };
+    const { reward: trash } = useReward("trash", "emoji", { emoji: ["🗑"] });
+    const { reward: square } = useReward("square", "emoji", { emoji: ["✨", "🔮", "📚"] });
 
     const addSubject = async () => {
-        console.log("Valor do name antes de adicionar:", name);
         const trimmedName = name.trim();
-        if (trimmedName === "") {
-            console.log("Nome está vazio, não adiciona.");
-            return;
-        }
+        if (trimmedName === "") return;
         setIsLoading(true);
         try {
-            const newSubject = {
+            await db.subjects.add({
                 name: trimmedName,
                 difficulty,
-                selectedSquares: [] // Inicializa o array vazio
-            };
-            await db.subjects.add(newSubject);
+                selectedSquares: []
+            });
             square();
             setName("");
             setDifficulty(3);
@@ -72,179 +51,118 @@ const SubjectsList: React.FC = () => {
     };
 
     const updateSubject = async (id: number, newDifficulty: number) => {
-        change();
         await db.subjects.update(id, { difficulty: newDifficulty });
     };
 
-    // Variantes para animação dos itens
-    const listItemVariants = {
-        hidden: { opacity: 0, x: -20 },
-        visible: { opacity: 1, x: 0 },
-        exit: { opacity: 0, x: 20 }
-    };
-
     return (
-        <IonCard>
-            <IonCard>
-                <IonCardHeader>
-                    <IonCardTitle>Como funciona: </IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                    <IonText>
-                        Cada{" "}
-                        <IonIcon
-                            style={{
-                                cursor: "pointer",
-                                color: "red",
-                                fontSize: "1.4em",
-                                verticalAlign: "middle"
-                            }}
-                            icon={closeCircle}
-                        />{" "}
-                        representa um nível de dificuldade. Quanto maior sua
-                        dificuldade em uma matéria, mais horas serão estudadas.
-                    </IonText>
-                    <IonText>
-                        <br />
-                        Cada{" "}
-                        <div
-                            style={{
-                                width: "24px",
-                                height: "24px",
-                                backgroundColor: "lightgray",
-                                borderRadius: "4px",
-                                margin: "0 8px",
-                                display: "inline-block"
-                            }}
-                        />
-                        representa uma hora a ser estudada por semana. Marque
-                        todas antes de recomeçar o ciclo e depois vá desmarcando
-                        para o novo ciclo.
-                    </IonText>
-                    <IonText>
-                        <br />
-                        Cada{" "}
-                        <div
-                            style={{
-                                width: "24px",
-                                height: "24px",
-                                backgroundColor: "green",
-                                borderRadius: "4px",
-                                margin: "0 8px",
-                                display: "inline-block"
-                            }}
-                        />{" "}
-                        representa uma hora que ja foi estudada. É possível
-                        marcar e desmarca-las
-                    </IonText>
-                </IonCardContent>
-            </IonCard>
+        <div className="glass-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Matérias do Ciclo</h2>
+                <IonIcon 
+                    icon={helpCircleOutline} 
+                    style={{ fontSize: '1.5rem', cursor: 'pointer', opacity: 0.6 }} 
+                    onClick={() => setShowHelp(!showHelp)}
+                />
+            </div>
 
-            <IonCardContent>
-                {/* Layout reorganizado: input numa linha e abaixo a dificuldade com botão */}
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "1rem"
-                    }}
-                >
-                    <IonItem>
-                        <IonInput
-                            placeholder="Adicionar Matéria"
-                            value={name}
-                            onIonInput={e => setName(e.detail.value!)}
-                        />
-                    </IonItem>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between"
-                        }}
+            <AnimatePresence>
+                {showHelp && (
+                    <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        style={{ overflow: 'hidden', marginBottom: '1.5rem' }}
                     >
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <IonLabel style={{ marginRight: "8px" }}>
-                                Dificuldade:
-                            </IonLabel>
-                            {[...Array(5)].map((_, i) => (
+                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', fontSize: '0.9rem' }}>
+                            <p>✨ <strong>Dificuldade:</strong> Quanto maior a dificuldade, mais horas o sistema dedicará a esta matéria no ciclo.</p>
+                            <p>🔮 <strong>Ciclo:</strong> Marque os quadrados conforme for estudando. Ao completar todos, reinicie o ciclo.</p>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                <IonItem lines="none" style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
+                    <IonInput
+                        placeholder="Nome da matéria (ex: Matemática)"
+                        value={name}
+                        onIonInput={e => setName(e.detail.value!)}
+                    />
+                </IonItem>
+                
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <IonLabel style={{ fontSize: '0.9rem', opacity: 0.8 }}>Peso:</IonLabel>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                            {[1, 2, 3, 4, 5].map((i) => (
                                 <IonIcon
                                     key={i}
-                                    icon={i < difficulty ? closeCircle : close}
-                                    style={{
-                                        cursor: "pointer",
-                                        color: "red",
-                                        fontSize: "1.4em",
-                                        marginRight: "4px"
-                                    }}
-                                    onClick={() =>
-                                        handleDifficultyChange(i + 1)
-                                    }
+                                    icon={i <= difficulty ? star : starOutline}
+                                    className={`difficulty-star ${i <= difficulty ? 'active' : 'inactive'}`}
+                                    onClick={() => setDifficulty(i)}
                                 />
                             ))}
                         </div>
-                        <IonButton onClick={addSubject} type="button">
-                            {isLoading ? (
-                                <IonSpinner name="crescent" />
-                            ) : (
-                                "Adicionar"
-                            )}
-                        </IonButton>
                     </div>
+                    
+                    <IonButton className="btn-magic" onClick={addSubject} disabled={isLoading || !name.trim()}>
+                        {isLoading ? <IonSpinner name="crescent" /> : <><IonIcon icon={addOutline} slot="start" /> Adicionar</>}
+                    </IonButton>
                 </div>
+            </div>
 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                 <AnimatePresence>
                     {subjects.map(subject => (
                         <motion.div
                             key={subject.id}
-                            variants={listItemVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
+                            style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'space-between',
+                                padding: '1rem',
+                                background: 'rgba(255,255,255,0.02)',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(255,255,255,0.05)'
+                            }}
                         >
-                            <IonItem>
-                                <IonLabel>{subject.name}</IonLabel>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center"
-                                    }}
-                                >
-                                    {[...Array(5)].map((_, i) => (
+                            <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 600, marginBottom: '4px' }}>{subject.name}</div>
+                                <div style={{ display: 'flex', gap: '2px' }}>
+                                    {[1, 2, 3, 4, 5].map((i) => (
                                         <IonIcon
                                             key={i}
-                                            icon={
-                                                i < subject.difficulty
-                                                    ? closeCircle
-                                                    : close
-                                            }
-                                            style={{
-                                                color: "red",
-                                                fontSize: "1.2em"
+                                            icon={i <= subject.difficulty ? star : starOutline}
+                                            style={{ 
+                                                fontSize: '0.9rem', 
+                                                color: i <= subject.difficulty ? '#ffd700' : 'rgba(255,255,255,0.1)',
+                                                cursor: 'pointer'
                                             }}
-                                            onClick={() =>
-                                                updateSubject(
-                                                    subject.id!,
-                                                    i + 1
-                                                )
-                                            }
+                                            onClick={() => updateSubject(subject.id!, i)}
                                         />
                                     ))}
                                 </div>
-                                <IonButton
-                                    color="danger"
-                                    onClick={() => removeSubject(subject.id!)}
-                                >
-                                    Remover
-                                </IonButton>
-                            </IonItem>
+                            </div>
+                            
+                            <IonButton 
+                                fill="clear" 
+                                color="danger" 
+                                onClick={() => removeSubject(subject.id!)}
+                                style={{ '--padding-start': '8px', '--padding-end': '8px' }}
+                            >
+                                <IonIcon icon={trashOutline} />
+                            </IonButton>
                         </motion.div>
                     ))}
                 </AnimatePresence>
-                <span id="change" />
-                <span id="trash" />
-            </IonCardContent>
-        </IonCard>
+            </div>
+            
+            <span id="square" style={{ position: 'fixed', left: '50%', top: '50%' }} />
+            <span id="trash" style={{ position: 'fixed', left: '50%', top: '50%' }} />
+        </div>
     );
 };
 

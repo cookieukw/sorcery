@@ -1,17 +1,13 @@
 // components/StudyPlanner.tsx
 import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonCard,
-  IonCardContent,
   IonLabel,
-  IonItem,
+  IonIcon,
+  IonText,
 } from "@ionic/react";
 import { db, Subject } from "../classes/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { AnimatePresence, motion } from "framer-motion";
-import AdBanner from "./AdBanner";
+import { checkmarkCircleOutline, schoolOutline } from "ionicons/icons";
 
 interface StudyPlannerProps {
   hoursPerDay: number;
@@ -28,16 +24,16 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
     const totalHoursPerWeek = hoursPerDay * daysPerWeek;
     const totalDifficulty = subjects.reduce((acc, s) => acc + s.difficulty, 0);
 
+    if (totalDifficulty === 0) return [];
+
     return subjects.map((subject) => {
       const hours = Math.round(
         (totalHoursPerWeek / totalDifficulty) * subject.difficulty
       );
-      // Garante que o array tenha exatamente 'hours' elementos
       const squares = Array(hours).fill(false);
 
       return {
         ...subject,
-        // Se já houver selectedSquares, atualiza para o tamanho correto, senão usa os novos
         selectedSquares: subject.selectedSquares
           ? [...subject.selectedSquares, ...squares].slice(0, hours)
           : squares,
@@ -51,89 +47,80 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
   ) => {
     const updatedSquares = [...subject.selectedSquares!];
     updatedSquares[squareIndex] = !updatedSquares[squareIndex];
-    subject.selectedSquares = updatedSquares;
     await db.subjects.update(subject.id!, {
       selectedSquares: updatedSquares,
     });
   };
 
-  // Variantes para animação dos itens (exemplo)
-  const squareVariants = {
-    hidden: { opacity: 0, scale: 0 },
-    visible: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0 },
-  };
+  const plan = calculateStudyPlan();
 
   return (
-    <IonGrid>
-      <AnimatePresence>
-        <IonRow>
-          {calculateStudyPlan().map((subject) => {
-            // Conta quantos quadrados estão marcados (estudados)
+    <div className="glass-card">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+        <IonIcon icon={schoolOutline} style={{ fontSize: '1.5rem', color: 'var(--magic-purple-light)' }} />
+        <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Plano de Estudos</h2>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <AnimatePresence>
+          {plan.map((subject) => {
             const studied = subject.selectedSquares!.filter((s) => s).length;
             const total = subject.selectedSquares!.length;
+            const progress = (studied / total) * 100;
+
             return (
-              <IonCol size="12" key={subject.id!}>
-                <IonCard>
-                  <IonCardContent>
-                    <IonLabel>
-                      <strong>{subject.name}</strong>
-                    </IonLabel>
+              <motion.div 
+                key={subject.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{
+                  padding: '1.2rem',
+                  background: 'rgba(255,255,255,0.02)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255,255,255,0.05)'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <IonLabel style={{ fontSize: '1.1rem', fontWeight: 600 }}>{subject.name}</IonLabel>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <IonText color="medium" style={{ fontSize: '0.85rem' }}>{studied}/{total}h</IonText>
+                    {studied === total && <IonIcon icon={checkmarkCircleOutline} color="success" />}
+                  </div>
+                </div>
+
+                <div style={{ 
+                  height: '4px', 
+                  background: 'rgba(255,255,255,0.05)', 
+                  borderRadius: '2px', 
+                  marginBottom: '1rem',
+                  overflow: 'hidden'
+                }}>
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    style={{ 
+                      height: '100%', 
+                      background: 'var(--magic-gradient)',
+                      boxShadow: '0 0 10px rgba(110, 69, 226, 0.4)'
+                    }} 
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {subject.selectedSquares!.map((isSelected, squareIndex) => (
                     <div
-                      style={{
-                        display: "flex",
-                        gap: "6px",
-                        flexWrap: "wrap",
-                        marginTop: "8px",
-                      }}
-                    >
-                      <AnimatePresence>
-                        {subject.selectedSquares!.map(
-                          (isSelected, squareIndex) => (
-                            <motion.div
-                              key={squareIndex}
-                              variants={squareVariants}
-                              initial="hidden"
-                              animate="visible"
-                              exit="exit"
-                              transition={{
-                                duration: 0.3,
-                              }}
-                              style={{
-                                width: "24px",
-                                height: "24px",
-                                backgroundColor: isSelected
-                                  ? "#4caf50"
-                                  : "lightgray",
-                                borderRadius: "4px",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                toggleSquareSelection(subject, squareIndex)
-                              }
-                            />
-                          )
-                        )}
-                      </AnimatePresence>
-                      <AdBanner />
-                    </div>
-                    <IonItem
-                      style={{
-                        marginTop: "8px",
-                        fontSize: "0.9em",
-                      }}
-                    >
-                      {studied} / {total} horas estudadas
-                    </IonItem>
-                    <AdBanner />
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
+                      key={squareIndex}
+                      className={`hour-square ${isSelected ? 'selected' : ''}`}
+                      onClick={() => toggleSquareSelection(subject, squareIndex)}
+                    />
+                  ))}
+                </div>
+              </motion.div>
             );
           })}
-        </IonRow>
-      </AnimatePresence>
-    </IonGrid>
+        </AnimatePresence>
+      </div>
+    </div>
   );
 };
 

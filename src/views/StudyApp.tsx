@@ -13,7 +13,6 @@ import SubjectsList from "../components/SubjectList";
 import StudySettings from "../components/StudySettings";
 import StudyPlanner from "../components/StudyPlanner";
 import { motion } from "framer-motion";
-import AdBanner from "../components/AdBanner";
 
 const StudyApp: React.FC = () => {
   const settings = useLiveQuery(() => db.settings.get(1));
@@ -32,51 +31,56 @@ const StudyApp: React.FC = () => {
     };
 
     prefersDark.addEventListener("change", setDarkThemeFromMediaQuery);
-    // Aplica o tema conforme a configuração armazenada, se existir
     toggleDarkPalette(darkMode);
     return () => {
       prefersDark.removeEventListener("change", setDarkThemeFromMediaQuery);
     };
-  }, [darkMode, settings]);
+  }, [darkMode]);
 
-  // Variantes para animação com framer-motion
   const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: { staggerChildren: 0.15 },
+      transition: { staggerChildren: 0.2 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
 
   return (
     <IonApp>
-      <IonHeader>
+      <IonHeader className="ion-no-border">
         <IonToolbar>
-          <IonTitle>Sorcery:Planejador de ciclo de estudos</IonTitle>
+          <IonTitle>SORCERY</IonTitle>
         </IonToolbar>
       </IonHeader>
+      
       <IonContent>
-        {/* Área com animação de entrada para os componentes */}
-        <motion.div variants={containerVariants} style={{ padding: "1rem" }}>
-          <StudySettings />
-          <motion.div variants={itemVariants}>
-            <AdBanner />
-            <SubjectsList />
+        <div className="container">
+          <motion.div 
+            variants={containerVariants} 
+            initial="hidden" 
+            animate="visible"
+          >
+            <motion.div variants={itemVariants}>
+              <StudySettings />
+            </motion.div>
+            
+            <motion.div variants={itemVariants}>
+              <SubjectsList />
+            </motion.div>
+            
+            <motion.div variants={itemVariants}>
+              <StudyPlanner
+                hoursPerDay={settings?.hoursPerDay ?? 5}
+                daysPerWeek={settings?.daysPerWeek ?? 5}
+              />
+            </motion.div>
           </motion.div>
-          <motion.div variants={itemVariants}>
-            <StudyPlanner
-              hoursPerDay={settings?.hoursPerDay ?? 5}
-              daysPerWeek={settings?.daysPerWeek ?? 5}
-            />
-            <AdBanner />
-          </motion.div>
-        </motion.div>
+        </div>
       </IonContent>
     </IonApp>
   );
