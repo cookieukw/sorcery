@@ -13,12 +13,11 @@ import {
     Bar, 
     XAxis, 
     YAxis, 
-    Tooltip, 
-    Legend 
+    Tooltip
 } from 'recharts';
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../classes/db";
-import { statsChartOutline, downloadOutline, shareOutline } from 'ionicons/icons';
+import { statsChartOutline, downloadOutline } from 'ionicons/icons';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 

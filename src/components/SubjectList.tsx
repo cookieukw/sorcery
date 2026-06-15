@@ -6,7 +6,6 @@ import {
     IonButton,
     IonInput,
     IonIcon,
-    IonText,
     IonSpinner
 } from "@ionic/react";
 import { star, starOutline, addOutline, trashOutline, helpCircleOutline } from "ionicons/icons";
