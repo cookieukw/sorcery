@@ -72,7 +72,7 @@ const SubjectsList: React.FC = () => {
                         exit={{ height: 0, opacity: 0 }}
                         style={{ overflow: 'hidden', marginBottom: '1.5rem' }}
                     >
-                        <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', fontSize: '0.9rem' }}>
+                        <div style={{ padding: '1rem', background: 'var(--glass-bg)', borderRadius: '12px', fontSize: '0.9rem' }}>
                             <p>✨ <strong>Dificuldade:</strong> Quanto maior a dificuldade, mais horas o sistema dedicará a esta matéria no ciclo.</p>
                             <p>🔮 <strong>Ciclo:</strong> Marque os quadrados conforme for estudando. Ao completar todos, reinicie o ciclo.</p>
                         </div>
@@ -81,7 +81,7 @@ const SubjectsList: React.FC = () => {
             </AnimatePresence>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-                <IonItem lines="none" style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
+                <IonItem lines="none" style={{ background: 'var(--glass-bg)', borderRadius: '12px' }}>
                     <IonInput
                         placeholder="Nome da matéria (ex: Matemática)"
                         value={name}
@@ -123,9 +123,9 @@ const SubjectsList: React.FC = () => {
                                 alignItems: 'center', 
                                 justifyContent: 'space-between',
                                 padding: '1rem',
-                                background: 'rgba(255,255,255,0.02)',
+                                background: 'var(--glass-bg)',
                                 borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.05)'
+                                border: '1px solid var(--glass-border)'
                             }}
                         >
                             <div style={{ flex: 1 }}>
@@ -137,7 +137,7 @@ const SubjectsList: React.FC = () => {
                                             icon={i <= subject.difficulty ? star : starOutline}
                                             style={{ 
                                                 fontSize: '0.9rem', 
-                                                color: i <= subject.difficulty ? '#ffd700' : 'rgba(255,255,255,0.1)',
+                                                color: i <= subject.difficulty ? '#ffd700' : 'var(--text-secondary)',
                                                 cursor: 'pointer'
                                             }}
                                             onClick={() => updateSubject(subject.id!, i)}

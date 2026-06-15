@@ -43,7 +43,7 @@ const StudyStats: React.FC = () => {
 
     const pieData = [
         { name: 'Concluído', value: totalStudied, color: '#6e45e2' },
-        { name: 'Pendente', value: totalRemaining, color: 'rgba(255,255,255,0.05)' }
+        { name: 'Pendente', value: totalRemaining, color: 'var(--glass-border)' }
     ];
 
     const exportToPDF = async () => {
@@ -94,8 +94,8 @@ const StudyStats: React.FC = () => {
                                 ))}
                             </Pie>
                             <Tooltip 
-                                contentStyle={{ background: '#1c1c1d', border: 'none', borderRadius: '8px', color: '#fff' }}
-                                itemStyle={{ color: '#fff' }}
+                                contentStyle={{ background: 'var(--ion-background-color)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-primary)' }}
+                                itemStyle={{ color: 'var(--text-primary)' }}
                             />
                         </PieChart>
                     </ResponsiveContainer>
@@ -106,11 +106,11 @@ const StudyStats: React.FC = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px' }}>
+                    <div style={{ background: 'var(--glass-bg)', padding: '1rem', borderRadius: '12px' }}>
                         <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>Total de Horas</div>
                         <div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{totalHours}h</div>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px' }}>
+                    <div style={{ background: 'var(--glass-bg)', padding: '1rem', borderRadius: '12px' }}>
                         <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>Horas Estudadas</div>
                         <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--magic-purple-light)' }}>{totalStudied}h</div>
                     </div>
@@ -126,11 +126,11 @@ const StudyStats: React.FC = () => {
                             dataKey="name" 
                             type="category" 
                             width={80} 
-                            tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 12 }} 
+                            tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} 
                         />
                         <Tooltip 
-                            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                            contentStyle={{ background: '#1c1c1d', border: 'none', borderRadius: '8px' }}
+                            cursor={{ fill: 'var(--glass-bg)' }}
+                            contentStyle={{ background: 'var(--ion-background-color)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
                         />
                         <Bar 
                             dataKey="concluido" 
@@ -142,7 +142,7 @@ const StudyStats: React.FC = () => {
                         <Bar 
                             dataKey="restante" 
                             stackId="a" 
-                            fill="rgba(255,255,255,0.05)" 
+                            fill="var(--glass-border)" 
                             radius={[0, 4, 4, 0]} 
                             barSize={12}
                         />

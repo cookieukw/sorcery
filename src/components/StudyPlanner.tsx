@@ -75,9 +75,9 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
                 animate={{ opacity: 1 }}
                 style={{
                   padding: '1.2rem',
-                  background: 'rgba(255,255,255,0.02)',
+                  background: 'var(--glass-bg)',
                   borderRadius: '16px',
-                  border: '1px solid rgba(255,255,255,0.05)'
+                  border: '1px solid var(--glass-border)'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -90,7 +90,7 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
 
                 <div style={{ 
                   height: '4px', 
-                  background: 'rgba(255,255,255,0.05)', 
+                  background: 'var(--glass-bg)', 
                   borderRadius: '2px', 
                   marginBottom: '1rem',
                   overflow: 'hidden'

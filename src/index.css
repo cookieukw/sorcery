@@ -21,9 +21,28 @@
     --ion-text-color: var(--text-primary);
 }
 
+:root.ion-palette-light {
+    --magic-purple: #6e45e2;
+    --magic-purple-light: #4a90e2;
+    --magic-gradient: linear-gradient(135deg, #6e45e2 0%, #4a90e2 100%);
+    --cosmic-bg: #f4f5f8;
+    --cosmic-gradient: linear-gradient(to bottom, #f4f5f8, #eef0f5, #e6e9f0);
+    
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+    
+    --text-primary: #1c1c1e;
+    --text-secondary: #6e6e73;
+    
+    --ion-background-color: var(--cosmic-bg);
+    --ion-text-color: var(--text-primary);
+}
+
+
 body {
     font-family: var(--font-family);
-    background: var(--cosmic-gradient) fixed;
+    background: var(--cosmic-gradient) fixed !important;
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -79,7 +98,7 @@ h1, h2, h3 {
 ion-toolbar {
     --background: transparent;
     --border-color: transparent;
-    --color: white;
+    --color: var(--text-primary);
     padding-top: 10px;
 }
 
@@ -87,6 +106,7 @@ ion-title {
     font-size: 1.5rem;
     font-weight: 800;
     text-align: center;
+    color: var(--text-primary);
 }
 
 ion-content {
@@ -103,7 +123,7 @@ ion-item {
 
 ion-input {
     --padding-start: 12px !important;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--glass-bg);
     border-radius: 10px;
     margin: 8px 0;
 }
@@ -149,7 +169,8 @@ ion-button {
 }
 
 .difficulty-star.inactive {
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+    opacity: 0.5;
 }
 
 /* Hour Squares */
@@ -169,7 +190,7 @@ ion-button {
 }
 
 .hour-square:not(.selected) {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg);
 }
 
 .hour-square:hover {

@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
-import "./index.css";
 import Home from "./views/StudyApp";
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -26,7 +26,9 @@ import "@ionic/react/css/display.css";
 
 // import '@ionic/react/css/palettes/dark.always.css';
 import "@ionic/react/css/palettes/dark.class.css";
-import "@ionic/react/css/palettes/dark.system.css";
+// import "@ionic/react/css/palettes/dark.system.css"; // Removido para respeitar o toggle manual
+
+import "./index.css"; // Importar por último para sobrescrever o Ionic
 
 import { setupIonicReact } from "@ionic/react";
 setupIonicReact();

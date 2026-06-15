@@ -22,22 +22,20 @@ const StudyApp: React.FC = () => {
 
   const toggleDarkPalette = (shouldAdd: boolean) => {
     document.documentElement.classList.toggle("ion-palette-dark", shouldAdd);
+    document.documentElement.classList.toggle("ion-palette-light", !shouldAdd);
   };
 
   useEffect(() => {
+    // Apenas aplica o darkMode das configurações ou, se não houver, da preferência do sistema
+    if (settings === undefined) return; // Ainda carregando configurações
+    
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-    toggleDarkPalette(prefersDark.matches);
-
-    const setDarkThemeFromMediaQuery = (mediaQuery: MediaQueryListEvent) => {
-      toggleDarkPalette(mediaQuery.matches);
-    };
-
-    prefersDark.addEventListener("change", setDarkThemeFromMediaQuery);
+    
+    // Se o usuário ainda não tiver nenhuma configuração salva (ex: primeiro acesso), usa o preferDark
+    // Mas como o db popula com darkMode: false, vamos apenas usar o estado darkMode.
     toggleDarkPalette(darkMode);
-    return () => {
-      prefersDark.removeEventListener("change", setDarkThemeFromMediaQuery);
-    };
-  }, [darkMode]);
+    
+  }, [settings, darkMode]);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },

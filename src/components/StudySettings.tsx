@@ -126,7 +126,7 @@ const StudySettings: React.FC = () => {
             <div style={{ 
                 marginTop: '1.5rem', 
                 padding: '1rem', 
-                background: 'rgba(255,255,255,0.03)', 
+                background: 'var(--glass-bg)', 
                 borderRadius: '12px',
                 textAlign: 'center'
             }}>
@@ -139,7 +139,7 @@ const StudySettings: React.FC = () => {
             </div>
 
             {/* Danger Zone */}
-            <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
+            <div style={{ marginTop: '2rem', borderTop: '1px solid var(--glass-border)', paddingTop: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem', color: '#ff4961' }}>
                     <IonIcon icon={alertCircleOutline} />
                     <h3 style={{ margin: 0, fontSize: '1rem', color: '#ff4961', background: 'none', WebkitTextFillColor: 'initial' }}>Zona de Perigo</h3>
