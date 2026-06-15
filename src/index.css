@@ -1,19 +1,16 @@
 :root {
     --font-family: 'Outfit', sans-serif;
     
-    /* Cosmic Palette */
-    --magic-purple: #6e45e2;
-    --magic-purple-light: #88d3ce;
-    --magic-gradient: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
-    --cosmic-bg: #0f0c29;
-    --cosmic-gradient: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+    /* Solid Palette (Slate/Blue Theme) */
+    --magic-purple: #3b82f6;
+    --cosmic-bg: #0f172a;
     
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     
-    --text-primary: #ffffff;
-    --text-secondary: #b0b0b0;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
     
     /* Ionic Overrides */
     --ion-font-family: var(--font-family);
@@ -22,18 +19,15 @@
 }
 
 :root.ion-palette-light {
-    --magic-purple: #6e45e2;
-    --magic-purple-light: #4a90e2;
-    --magic-gradient: linear-gradient(135deg, #6e45e2 0%, #4a90e2 100%);
-    --cosmic-bg: #f4f5f8;
-    --cosmic-gradient: linear-gradient(to bottom, #f4f5f8, #eef0f5, #e6e9f0);
+    --magic-purple: #2563eb;
+    --cosmic-bg: #f8fafc;
     
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(0, 0, 0, 0.08);
     --glass-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
     
-    --text-primary: #1c1c1e;
-    --text-secondary: #6e6e73;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
     
     --ion-background-color: var(--cosmic-bg);
     --ion-text-color: var(--text-primary);
@@ -42,7 +36,7 @@
 
 body {
     font-family: var(--font-family);
-    background: var(--cosmic-gradient) fixed !important;
+    background: var(--cosmic-bg) !important;
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -71,9 +65,7 @@ body {
 h1, h2, h3 {
     font-weight: 700;
     letter-spacing: -0.02em;
-    background: var(--magic-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--magic-purple);
 }
 
 /* Custom Scrollbar */
@@ -137,7 +129,7 @@ ion-button {
 }
 
 .btn-magic {
-    --background: var(--magic-gradient);
+    --background: var(--magic-purple);
     --color: white;
 }
 
@@ -184,9 +176,9 @@ ion-button {
 }
 
 .hour-square.selected {
-    background: var(--magic-gradient);
+    background: var(--magic-purple);
     border-color: transparent;
-    box-shadow: 0 0 15px rgba(110, 69, 226, 0.5);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
 }
 
 .hour-square:not(.selected) {

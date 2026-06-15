@@ -100,8 +100,8 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({
                     animate={{ width: `${progress}%` }}
                     style={{ 
                       height: '100%', 
-                      background: 'var(--magic-gradient)',
-                      boxShadow: '0 0 10px rgba(110, 69, 226, 0.4)'
+                      background: 'var(--magic-purple)',
+                      boxShadow: '0 0 10px rgba(59, 130, 246, 0.4)'
                     }} 
                   />
                 </div>
